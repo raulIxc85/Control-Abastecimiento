@@ -15,10 +15,20 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
+        User::firstOrCreate([
             'name' => 'Test Admin',
             'email' => 'admin@gmail.com',
             'password' => 'test'
+        ], [
+            'role' => User::ADMIN
+        ]);
+
+        User::firstOrCreate([
+            'name' => 'Test App',
+            'email' => 'test@gmail.com',
+            'password' => 'test',
+        ], [
+            'role' => User::TEST
         ]);
     }
 }

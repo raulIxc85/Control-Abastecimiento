@@ -12,6 +12,12 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    const ADMIN = 1;
+    const STORE = 2;
+    const PLANNING = 3;
+    const PROGRAMMING = 4;
+    const TEST = 5;
+    
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -53,5 +59,30 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function isAdmin()
+    {
+        return $this->role == static::ADMIN;
+    }
+
+    public function isStore()
+    {
+        return $this->role == static::STORE;
+    }
+
+    public function isPlanning()
+    {
+        return $this->role == static::PLANNING;
+    }
+    
+    public function isProgramming()
+    {
+        return $this->role == static::PROGRAMMING;
+    }
+
+    public function isTest()
+    {
+        return $this->role == static::TEST;
     }
 }
