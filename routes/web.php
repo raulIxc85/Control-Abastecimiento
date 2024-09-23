@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PilotController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -11,9 +12,11 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/pilots', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('pilots');
+Route::middleware('auth')->group(function () {
+    Route::get('/pilots', [PilotController::class, 'index'])->name('pilots.index');
+    Route::get('/pilots/create', [PilotController::class, 'create'])->name('pilots.create');
+    Route::get('/pilots/{pilotId}/edit', [PilotController::class, 'edit'])->name('pilots.edit');
+});
 
 Route::get('/agencies', function () {
     return view('dashboard');
