@@ -85,4 +85,8 @@ class User extends Authenticatable
     {
         return $this->role == static::TEST;
     }
+
+    public function pilots(){
+        return $this->hashMany(Pilot::class);
+    }
 }
