@@ -12,7 +12,7 @@ class PilotController extends Controller
      */
     public function index()
     {
-        return view('pilot');
+        return view('pilots.listPilot');
     }
 
     /**
@@ -20,7 +20,7 @@ class PilotController extends Controller
      */
     public function create()
     {
-        return view('createPilot');
+        return view('pilots.formPilot', ['pilotId' => '']);
     }
 
     /**
@@ -44,7 +44,7 @@ class PilotController extends Controller
      */
     public function edit(Pilot $pilot)
     {
-        return view('createPilot');
+        return view('pilots.formPilot', ['pilotId' => $pilot]);
     }
 
     /**

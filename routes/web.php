@@ -15,7 +15,7 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/pilots', [PilotController::class, 'index'])->name('pilots.index');
     Route::get('/pilots/create', [PilotController::class, 'create'])->name('pilots.create');
-    Route::get('/pilots/{pilotId}/edit', [PilotController::class, 'edit'])->name('pilots.edit');
+    Route::get('/pilots/{pilot}/edit', [PilotController::class, 'edit'])->name('pilots.edit');
 });
 
 Route::get('/agencies', function () {

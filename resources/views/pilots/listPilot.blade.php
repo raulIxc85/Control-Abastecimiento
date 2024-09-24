@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="py-1">
-        <livewire:Pilots.pilots/>
+        <livewire:Pilots.list-pilot/>
     </div>
 </x-admin-layout>
 

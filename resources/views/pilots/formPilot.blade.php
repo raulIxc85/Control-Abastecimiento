@@ -6,7 +6,9 @@
     </x-slot>
 
     <div class="py-1">
-        <livewire:Pilots.create-pilot/>
+        <livewire:Pilots.form-pilot 
+            :pilotId="$pilotId"
+        />
     </div>
 </x-admin-layout>
 

@@ -8,6 +8,17 @@ new class extends Component {
         'name' => ''
     ];
 
+    public $pilotId;
+
+    public function mount($pilotId = null)
+    {
+        $this->pilotId = $pilotId;
+        if ($this->pilotId) {
+            $pilot = Pilot::findOrFail($this->pilotId->id);
+            $this->form['name'] = $pilot->name;
+        }
+    }
+
     public function save()
     {
         $this->validate([
@@ -19,13 +30,22 @@ new class extends Component {
 
         $user = auth()->user();
 
-        Pilot::create([
-            'name' => $this->form['name'],
-            'user_id' => $user->id
-        ]);
+        if ($this->pilotId) {
+            $pilot = Pilot::findOrFail($this->pilotId->id);
+            $pilot->update([
+                'name' => $this->form['name'],
+            ]);
+            session()->flash('message', 'Piloto actualizado exitosamente.');
+            return redirect()->route('pilots.index');
+        } else {
+            Pilot::create([
+                'name' => $this->form['name'],
+                'user_id' => $user->id
+            ]);
      
-        session()->flash('message', 'Piloto creado exitosamente.');
-        return redirect()->route('pilots.index');
+            session()->flash('message', 'Piloto creado exitosamente.');
+            return redirect()->route('pilots.index');
+        }
     }
 }; ?>
 
@@ -37,7 +57,7 @@ new class extends Component {
                     <div class="bg-white py-6 px-4 space-y-6 sm:p-6">
                         <div>
                             <h3 class="text-lg leading-6 font-medium text-gray-900">
-                                Crear piloto
+                                {{ $pilotId ? 'Actualizar piloto' : 'Crear piloto' }}
                             </h3>
                         </div>
                         <div class="grid grid-cols-6 gap-6">
@@ -59,7 +79,7 @@ new class extends Component {
                         </a>
                         <button type="submit"
                             class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            Guardar
+                            {{ $pilotId ? 'Actualizar' : 'Guardar' }}
                         </button>
                     </div>
                 </div>
