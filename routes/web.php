@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PilotController;
+use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,10 +19,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/pilots/{pilot}/edit', [PilotController::class, 'edit'])->name('pilots.edit');
 });
 
-Route::get('/agencies', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('agencies');
-
+Route::middleware('auth')->group(function () {
+    Route::get('/agencies', [AgencyController::class, 'index'])->name('agencies.index');
+    Route::get('/agencies/create', [AgencyController::class, 'create'])->name('agencies.create');
+    Route::get('/agencies/{agency}/edit', [AgencyController::class, 'edit'])->name('agencies.edit');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

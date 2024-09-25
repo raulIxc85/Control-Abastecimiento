@@ -42,7 +42,7 @@
                     <x-side-nav-link href="{{ route('pilots.index') }}" :active="request()->routeIs('pilots')">
                         Pilotos
                     </x-side-nav-link>
-                    <x-side-nav-link href="{{ route('agencies') }}" :active="request()->routeIs('agencies')">
+                    <x-side-nav-link href="{{ route('agencies.index') }}" :active="request()->routeIs('agencies')">
                         Agencias
                     </x-side-nav-link>
                 </nav>
