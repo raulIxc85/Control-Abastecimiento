@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PilotController;
 use App\Http\Controllers\AgencyController;
+use App\Http\Controllers\ApplicantController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/agencies', [AgencyController::class, 'index'])->name('agencies.index');
     Route::get('/agencies/create', [AgencyController::class, 'create'])->name('agencies.create');
     Route::get('/agencies/{agency}/edit', [AgencyController::class, 'edit'])->name('agencies.edit');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/applicants', [ApplicantController::class, 'index'])->name('applicants.index');
+    Route::get('/applicants/create', [ApplicantController::class, 'create'])->name('applicants.create');
+    Route::get('/applicants/{applicant}/edit', [ApplicantController::class, 'edit'])->name('applicants.edit');
 });
 
 Route::middleware('auth')->group(function () {
