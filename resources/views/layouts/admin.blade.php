@@ -48,6 +48,9 @@
                     <x-side-nav-link href="{{ route('applicants.index') }}" :active="request()->routeIs('applicants')">
                         Solicitantes
                     </x-side-nav-link>
+                    <x-side-nav-link href="{{ route('applications.index') }}" :active="request()->routeIs('applications')">
+                        Solicitudes
+                    </x-side-nav-link>
                 </nav>
             </aside>
             <!------main content----->

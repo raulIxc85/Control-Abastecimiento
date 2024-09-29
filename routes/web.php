@@ -3,6 +3,7 @@
 use App\Http\Controllers\PilotController;
 use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\ApplicantController;
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/applicants', [ApplicantController::class, 'index'])->name('applicants.index');
     Route::get('/applicants/create', [ApplicantController::class, 'create'])->name('applicants.create');
     Route::get('/applicants/{applicant}/edit', [ApplicantController::class, 'edit'])->name('applicants.edit');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/applications', [ApplicationController::class, 'index'])->name('applications.index');
+    Route::get('/applications/create', [ApplicationController::class, 'create'])->name('applications.create');
+    Route::get('/applications/{application}/edit', [ApplicationController::class, 'edit'])->name('applications.edit');
 });
 
 Route::middleware('auth')->group(function () {
