@@ -22,9 +22,11 @@ class Application extends Model
 
     protected $fillable = [
         'date',
-        'quantity',
+        'pallet_quantity',
         'origin_agency_id',
         'destination_agency_id',
+        'pallet_requirement',
+        'order',
         'status',
         'user_id',
         'modified_user_id'

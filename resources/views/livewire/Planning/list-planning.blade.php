@@ -10,8 +10,7 @@ new class extends Component {
     public function with()
     {
         return [
-            'applications' => Application::where('status', 'Solicitado')
-                        ->orderBy('date', 'desc')
+            'applications' => Application::orderBy('date', 'desc')
                         ->paginate(10)
         ];
     }
@@ -73,7 +72,7 @@ new class extends Component {
                                             </td>
                                             <td
                                                 class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 text-center">
-                                                {{ $application->quantity }}
+                                                {{ $application->pallet_quantity }}
                                             </td>
                                             <td
                                                 class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">

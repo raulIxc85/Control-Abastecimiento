@@ -8,11 +8,12 @@ use App\Models\User;
 new class extends Component {
     public $form = [
         'date' => '',
-        'quantity' => 0
+        'pallet_requirement' => 0
+
     ];
 
     public $applicationId;
-    public $status = 'Solicitado';
+    public $status = 'Requerido';
     public $isEditing = false;
     public $agencies;
 
@@ -23,7 +24,9 @@ new class extends Component {
         if ($this->applicationId) {
             $application = Application::findOrFail($this->applicationId->id);
             $this->form['date'] = $application->date;
-            $this->form['quantity'] = $application->quantity;
+            $this->form['pallet_quantity'] = $application->pallet_quantity;
+            $this->form['pallet_requirement'] = $application->pallet_requirement;
+            $this->form['order'] = $application->order;
             $this->form['origin_agency_id'] = $application->origin_agency_id;
             $this->form['destination_agency_id'] = $application->destination_agency_id;
             $this->isEditing = true;
@@ -34,15 +37,9 @@ new class extends Component {
     public function save()
     {
         $this->validate([
-            'form.date' => 'required|date',
-            'form.quantity' => 'required|integer|min:1',
-            'form.origin_agency_id' => 'required',
-            'form.destination_agency_id' => 'required'
+            'form.pallet_requirement' => 'required|integer|min:1',
         ], [
-            'form.date.required' => 'Ingrese una fecha', 
-            'form.quantity.required' => 'Ingrese cantidad de pallet',
-            'form.origin_agency_id' => 'Seleccione origen',
-            'form.destination_agency_id' => 'Seleccione destino'
+            'form.pallet_requirement.required' => 'Ingrese requerimiento de pallet',
         ]);
 
         $user = auth()->user();
@@ -50,23 +47,11 @@ new class extends Component {
         if ($this->applicationId) {
             $application = Application::findOrFail($this->applicationId->id);
             $application->update([
-                'quantity' => $this->form['quantity'],
+                'pallet_requirement' => $this->form['pallet_requirement'],
+                'status' => $this->status,
                 'modified_user_id' => $user->id
             ]);
             session()->flash('message', 'Pedido actualizado exitosamente.');
-            return redirect()->route('planning.index');
-        } else {
-            Application::create([
-                'date' => $this->form['date'],
-                'quantity' => $this->form['quantity'],
-                'origin_agency_id' => $this->form['origin_agency_id'],
-                'destination_agency_id' => $this->form['destination_agency_id'],
-                'status' => $this->status,
-                'user_id' => $user->id
-            ]);
-     
-            session()->flash('message', 'Pedido creado exitosamente.');
-
             return redirect()->route('planning.index');
         }
     }
@@ -80,7 +65,7 @@ new class extends Component {
                     <div class="bg-white py-6 px-4 space-y-6 sm:p-6">
                         <div>
                             <h3 class="text-lg leading-6 font-medium text-gray-900">
-                                {{ $applicationId ? 'Actualizar pedido' : '' }}
+                                {{ $applicationId ? 'Planificación - Actualizar pedido' : '' }}
                             </h3>
                         </div>
                         <div class="grid grid-cols-12 gap-12">
@@ -94,11 +79,11 @@ new class extends Component {
                                 @enderror
                             </div>
                             <div class="col-span-6 sm:col-span-6">
-                                <label for="quantity" class="block text-sm font-medium text-gray-700">Cantidad de pallet:</label>
-                                <input type="number" id="quantity" wire:model="form.quantity"
+                                <label for="pallet_quantity" class="block text-sm font-medium text-gray-700">Cantidad de pallet:</label>
+                                <input type="number" id="pallet_quantity" wire:model="form.pallet_quantity"
                                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('form.name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
                                 " {{ $isEditing ? 'disabled' : '' }}/>
-                                @error('form.quantity')
+                                @error('form.pallet_quantity')
                                     <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -131,11 +116,20 @@ new class extends Component {
                         </div>
                         <div class="grid grid-cols-12 gap-12">
                             <div class="col-span-6 sm:col-span-6">
-                                <label for="quantity" class="block text-sm font-medium text-gray-700">Requerimiento de pallet:</label>
-                                <input type="number" id="quantity" wire:model="form.quantity"
+                                <label for="pallet_requirement" class="block text-sm font-medium text-gray-700">Requerimiento de pallet:</label>
+                                <input type="number" id="pallet_requirement" wire:model="form.pallet_requirement"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('form.name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
+                                "/>
+                                @error('form.pallet_requirement')
+                                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div class="col-span-6 sm:col-span-6">
+                                <label for="order" class="block text-sm font-medium text-gray-700">Pedido:</label>
+                                <input type="text" id="order" wire:model="form.order"
                                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('form.name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
                                 " {{ $isEditing ? 'disabled' : '' }}/>
-                                @error('form.quantity')
+                                @error('form.order')
                                     <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -148,7 +142,7 @@ new class extends Component {
                         </a>
                         <button type="submit"
                             class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            {{ $applicationId ? 'Actualizar' : 'Guardar' }}
+                            {{ $applicationId ? 'Pedir' : 'Guardar' }}
                         </button>
                     </div>
                 </div>
