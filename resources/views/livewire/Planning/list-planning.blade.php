@@ -15,15 +15,6 @@ new class extends Component {
                         ->paginate(10)
         ];
     }
-
-    public function delete($aplicationId)
-    {
-        $pilot = Pilot::findOrFail($applicationId);
-        $pilot->status = false;
-        $pilot->save();
-
-        session()->flash('message', 'Solicitud eliminada exitosamente.');
-    }
 }; ?>
 
 <div class="bg-gray-100 py-10">
@@ -39,14 +30,8 @@ new class extends Component {
             <div class="sm:flex sm:items-center">
                 <div class="sm:flex-auto">
                     <h1 class="text-xl font-semibold text-gray-900">
-                        Solicitudes
+                        Planificaciones
                     </h1>
-                </div>
-                <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-                    <a wire:navigate href=" {{ route('applications.create') }}"
-                        class="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
-                        Crear solicitud
-                    </a>
                 </div>
             </div>
             <div class="mt-8 flex flex-col">
@@ -104,7 +89,7 @@ new class extends Component {
                                             </td>
                                             <td
                                                 class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                                <button wire:navigate href="{{ route('applications.edit', $application->id) }}"
+                                                <button wire:navigate href="{{ route('planning.edit', $application->id) }}"
                                                     class="ml-2 text-indigo-600 hover:text-indigo-900">
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
                                                         <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z" />
@@ -124,7 +109,7 @@ new class extends Component {
                             </table>
                         </div>
                         <div class="mt-5">
-                            {{ $applications ->links() }}
+                            {{ $applications->links() }}
                         </div>
                     </div>
                 </div>

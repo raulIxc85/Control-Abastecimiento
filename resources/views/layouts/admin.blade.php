@@ -45,11 +45,11 @@
                     <x-side-nav-link href="{{ route('agencies.index') }}" :active="request()->routeIs('agencies')">
                         Agencias
                     </x-side-nav-link>
-                    <x-side-nav-link href="{{ route('applicants.index') }}" :active="request()->routeIs('applicants')">
-                        Solicitantes
+                    <x-side-nav-link href="{{ route('planning.index') }}" :active="request()->routeIs('planning')">
+                        Planificación
                     </x-side-nav-link>
-                    <x-side-nav-link href="{{ route('applications.index') }}" :active="request()->routeIs('applications')">
-                        Solicitudes
+                    <x-side-nav-link href="{{ route('orders.index') }}" :active="request()->routeIs('orders')">
+                        Control de pedidos
                     </x-side-nav-link>
                 </nav>
             </aside>

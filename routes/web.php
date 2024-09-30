@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\PilotController;
 use App\Http\Controllers\AgencyController;
-use App\Http\Controllers\ApplicantController;
-use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\PlanningController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,15 +28,15 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/applicants', [ApplicantController::class, 'index'])->name('applicants.index');
-    Route::get('/applicants/create', [ApplicantController::class, 'create'])->name('applicants.create');
-    Route::get('/applicants/{applicant}/edit', [ApplicantController::class, 'edit'])->name('applicants.edit');
+    Route::get('/planning', [PlanningController::class, 'index'])->name('planning.index');
+    Route::get('/planning/create', [PlanningController::class, 'create'])->name('planning.create');
+    Route::get('/planning/{application}/edit', [PlanningController::class, 'edit'])->name('planning.edit');
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/applications', [ApplicationController::class, 'index'])->name('applications.index');
-    Route::get('/applications/create', [ApplicationController::class, 'create'])->name('applications.create');
-    Route::get('/applications/{application}/edit', [ApplicationController::class, 'edit'])->name('applications.edit');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
+    Route::get('/orders/{application}/edit', [OrderController::class, 'edit'])->name('orders.edit');
 });
 
 Route::middleware('auth')->group(function () {

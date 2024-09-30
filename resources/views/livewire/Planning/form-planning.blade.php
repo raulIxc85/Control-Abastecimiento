@@ -2,7 +2,6 @@
 
 use Livewire\Volt\Component;
 use App\Models\Application;
-use App\Models\Pilot;
 use App\Models\Agency;
 use App\Models\User;
 
@@ -54,8 +53,8 @@ new class extends Component {
                 'quantity' => $this->form['quantity'],
                 'modified_user_id' => $user->id
             ]);
-            session()->flash('message', 'Solicitud actualizado exitosamente.');
-            return redirect()->route('applications.index');
+            session()->flash('message', 'Pedido actualizado exitosamente.');
+            return redirect()->route('planning.index');
         } else {
             Application::create([
                 'date' => $this->form['date'],
@@ -66,9 +65,9 @@ new class extends Component {
                 'user_id' => $user->id
             ]);
      
-            session()->flash('message', 'Solicitud creado exitosamente.');
+            session()->flash('message', 'Pedido creado exitosamente.');
 
-            return redirect()->route('applications.index');
+            return redirect()->route('planning.index');
         }
     }
 }; ?>
@@ -81,7 +80,7 @@ new class extends Component {
                     <div class="bg-white py-6 px-4 space-y-6 sm:p-6">
                         <div>
                             <h3 class="text-lg leading-6 font-medium text-gray-900">
-                                {{ $applicationId ? 'Actualizar solicitud' : 'Crear solicitud' }}
+                                {{ $applicationId ? 'Actualizar pedido' : '' }}
                             </h3>
                         </div>
                         <div class="grid grid-cols-12 gap-12">
@@ -98,7 +97,7 @@ new class extends Component {
                                 <label for="quantity" class="block text-sm font-medium text-gray-700">Cantidad de pallet:</label>
                                 <input type="number" id="quantity" wire:model="form.quantity"
                                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('form.name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
-                                "/>
+                                " {{ $isEditing ? 'disabled' : '' }}/>
                                 @error('form.quantity')
                                     <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                                 @enderror
@@ -130,9 +129,20 @@ new class extends Component {
                                 @enderror
                             </div>
                         </div>
+                        <div class="grid grid-cols-12 gap-12">
+                            <div class="col-span-6 sm:col-span-6">
+                                <label for="quantity" class="block text-sm font-medium text-gray-700">Requerimiento de pallet:</label>
+                                <input type="number" id="quantity" wire:model="form.quantity"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('form.name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
+                                " {{ $isEditing ? 'disabled' : '' }}/>
+                                @error('form.quantity')
+                                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
                     <div class="px-4 py-3 bg-gray-50 text-left sm:px-6">
-                        <a wire:navigate href="{{ route('applications.index') }}" as="button"
+                        <a wire:navigate href="{{ route('planning.index') }}" as="button"
                             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Regresar
                         </a>
