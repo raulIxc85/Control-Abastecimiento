@@ -5,14 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Application;
 use Illuminate\Http\Request;
 
-class ApplicationController extends Controller
+class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('applications.listApplication');
+        return view('orders.listOrder');
     }
 
     /**
@@ -20,7 +20,7 @@ class ApplicationController extends Controller
      */
     public function create()
     {
-        return view('applications.formApplication', ['applicationId' => '']);
+        return view('orders.formOrder', ['applicationId' => '']);
     }
 
     /**
@@ -44,7 +44,7 @@ class ApplicationController extends Controller
      */
     public function edit(Application $application)
     {
-        return view('applications.formApplication', ['applicationId' => $application]);
+        return view('orders.formOrder', ['applicationId' => $application]);
     }
 
     /**

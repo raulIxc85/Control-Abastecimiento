@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Applicant;
+use App\Models\Application;
 use Illuminate\Http\Request;
 
-class ApplicantController extends Controller
+class PlanningController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('applicants.listApplicant');
+        return view('planning.listPlanning');
     }
 
     /**
@@ -20,7 +20,7 @@ class ApplicantController extends Controller
      */
     public function create()
     {
-        return view('applicants.formApplicant', ['applicantId' => '']);
+        //
     }
 
     /**
@@ -34,7 +34,7 @@ class ApplicantController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Applicant $applicant)
+    public function show(Application $application)
     {
         //
     }
@@ -42,15 +42,15 @@ class ApplicantController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Applicant $applicant)
+    public function edit(Application $application)
     {
-        return view('applicants.formApplicant', ['applicantId' => $applicant]);
+        return view('planning.formPlanning', ['applicationId' => $application]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Applicant $applicant)
+    public function update(Request $request, Application $application)
     {
         //
     }
@@ -58,7 +58,7 @@ class ApplicantController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Applicant $applicant)
+    public function destroy(Application $application)
     {
         //
     }
