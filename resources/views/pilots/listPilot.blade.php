@@ -1,9 +1,15 @@
+@php
+
+$breadcrumbs = [
+    'Dashboard' => route('dashboard'),
+    'Pilotos' => false
+];
+
+@endphp
+
 <x-admin-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Pilotos') }}
-        </h2>
-    </x-slot>
+    <livewire:header title="Pilotos"/>
+    <livewire:breadcrumbs :breadcrumb-items="$breadcrumbs" />
 
     <div class="py-1">
         <livewire:Pilots.list-pilot/>

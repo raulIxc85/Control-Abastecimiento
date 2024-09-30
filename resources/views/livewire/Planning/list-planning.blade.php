@@ -16,7 +16,7 @@ new class extends Component {
     }
 }; ?>
 
-<div class="bg-gray-100 py-10">
+<div class="dark:bg-gray-600 py-5">
     <div class="mx-auto max-w-7xl">
         <div class="px-4 sm:px-6 lg:px-8">
             <!-- Mostrar mensaje de éxito -->
@@ -28,9 +28,6 @@ new class extends Component {
             @endif
             <div class="sm:flex sm:items-center">
                 <div class="sm:flex-auto">
-                    <h1 class="text-xl font-semibold text-gray-900">
-                        Planificaciones
-                    </h1>
                 </div>
             </div>
             <div class="mt-8 flex flex-col">

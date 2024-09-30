@@ -1,9 +1,15 @@
+@php
+
+$breadcrumbs = [
+    'Dashboard' => route('dashboard'),
+    'Control de pedidos' => false
+];
+
+@endphp
+
 <x-admin-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Control de pedidos') }}
-        </h2>
-    </x-slot>
+    <livewire:header title="Control de pedidos"/>
+    <livewire:breadcrumbs :breadcrumb-items="$breadcrumbs"/>
 
     <div class="py-1">
         <livewire:Orders.form-order

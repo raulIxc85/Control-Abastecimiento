@@ -26,7 +26,7 @@ new class extends Component {
     }
 }; ?>
 
-<div class="bg-gray-100 py-10">
+<div class="dark:bg-gray-600 py-5">
     <div class="mx-auto max-w-7xl">
         <div class="px-4 sm:px-6 lg:px-8">
             <!-- Mostrar mensaje de éxito -->
@@ -38,9 +38,6 @@ new class extends Component {
             @endif
             <div class="sm:flex sm:items-center">
                 <div class="sm:flex-auto">
-                    <h1 class="text-xl font-semibold text-gray-900">
-                        Agencias
-                    </h1>
                 </div>
                 <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
                     <a wire:navigate href=" {{ route('agencies.create') }}"
