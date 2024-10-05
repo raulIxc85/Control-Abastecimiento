@@ -12,11 +12,20 @@ new class extends Component {
 
     ];
 
+    public $file;
     public $applicationId;
     public $status = 'Requerido';
+    public $statusRevision = 'Enviado';
     public $isEditing = false;
+    public $statusForm = '';
     public $agencies;
 
+    protected $listeners = ['fileUploaded'];
+
+    public function fileUploaded($file)
+    {
+        $this->file = $file;
+    }
 
     public function mount($applicationId = null)
     {
@@ -29,30 +38,55 @@ new class extends Component {
             $this->form['order'] = $application->order;
             $this->form['origin_agency_id'] = $application->origin_agency_id;
             $this->form['destination_agency_id'] = $application->destination_agency_id;
-            $this->isEditing = true;
+            $this->form['status'] = $application->status;
+            $this->statusForm = $application->status;
+            if ($this->statusForm == 'Pedido'){
+                $this->isEditing = true;
+            }
+            if ($this->statusForm == 'Solicitado'){
+                $this->isEditing = false;
+            }
+            
         }
         $this->agencies = Agency::all();
     }
 
     public function save()
     {
-        $this->validate([
-            'form.pallet_requirement' => 'required|integer|min:1',
-        ], [
-            'form.pallet_requirement.required' => 'Ingrese requerimiento de pallet',
-        ]);
-
-        $user = auth()->user();
-
-        if ($this->applicationId) {
-            $application = Application::findOrFail($this->applicationId->id);
-            $application->update([
-                'pallet_requirement' => $this->form['pallet_requirement'],
-                'status' => $this->status,
-                'modified_user_id' => $user->id
+        if($this->statusForm == 'Solicitado'){
+            $this->validate([
+                'form.pallet_requirement' => 'required|integer|min:1',
+            ], [
+                'form.pallet_requirement.required' => 'Ingrese requerimiento de pallet',
             ]);
-            session()->flash('message', 'Pedido actualizado exitosamente.');
-            return redirect()->route('planning.index');
+
+            $user = auth()->user();
+
+            if ($this->applicationId) {
+                $application = Application::findOrFail($this->applicationId->id);
+                $application->update([
+                    'pallet_requirement' => $this->form['pallet_requirement'],
+                    'status' => $this->status,
+                    'modified_user_id' => $user->id
+                ]);
+                session()->flash('message', 'Pedido actualizado exitosamente.');
+                return redirect()->route('planning.index');
+            }
+        }
+        if($this->statusForm == 'Pedido'){
+            $user = auth()->user();
+            if ($this->file) {
+                $application = Application::findOrFail($this->applicationId->id);
+                $application->update([
+                    'excel_file' => $this->file,
+                    'status' => $this->statusRevision,
+                    'modified_user_id' => $user->id
+                ]);
+                session()->flash('message', 'El archivo ha sido subido exitosamente');
+                return redirect()->route('planning.index');
+            }else {
+                session()->flash('error', 'No hay archivo para guardar.');
+            }
         }
     }
 }; ?>
@@ -65,7 +99,7 @@ new class extends Component {
                     <div class="bg-white py-6 px-4 space-y-6 sm:p-6">
                         <div>
                             <h3 class="text-lg leading-6 font-medium text-gray-900">
-                                {{ $applicationId ? 'Planificación - Actualizar pedido' : '' }}
+                                {{ $applicationId ? 'Planificación - Actualizar pedido / ' : '' }} {{$statusForm}}
                             </h3>
                         </div>
                         <div class="grid grid-cols-12 gap-12">
@@ -119,7 +153,7 @@ new class extends Component {
                                 <label for="pallet_requirement" class="block text-sm font-medium text-gray-700">Requerimiento de pallet:</label>
                                 <input type="number" id="pallet_requirement" wire:model="form.pallet_requirement"
                                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('form.name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
-                                "/>
+                                "  {{ $isEditing ? 'disabled' : '' }}/>
                                 @error('form.pallet_requirement')
                                     <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                                 @enderror
@@ -128,22 +162,36 @@ new class extends Component {
                                 <label for="order" class="block text-sm font-medium text-gray-700">Pedido:</label>
                                 <input type="text" id="order" wire:model="form.order"
                                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('form.name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
-                                " {{ $isEditing ? 'disabled' : '' }}/>
+                                " disabled />
                                 @error('form.order')
                                     <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
+                        @if($form['status'] == 'Pedido')
+                            <div class="grid grid-cols-12 gap-12">
+                                <div class="col-span-6 sm:col-span-6">
+                                    <livewire:upload-excel/>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                     <div class="px-4 py-3 bg-gray-50 text-left sm:px-6">
                         <a wire:navigate href="{{ route('planning.index') }}" as="button"
                             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Regresar
                         </a>
-                        <button type="submit"
-                            class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            {{ $applicationId ? 'Pedir' : 'Guardar' }}
-                        </button>
+                        @if($form['status'] == 'Pedido')
+                            <button type="submit"
+                                class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Subir excel
+                            </button>
+                        @else
+                            <button type="submit"
+                                class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                {{ $applicationId ? 'Pedir' : 'Guardar' }}
+                            </button>
+                        @endif
                     </div>
                 </div>
             </form>

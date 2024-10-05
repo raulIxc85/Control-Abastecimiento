@@ -29,7 +29,8 @@ class Application extends Model
         'order',
         'status',
         'user_id',
-        'modified_user_id'
+        'modified_user_id',
+        'excel_file'
     ];
 
     public function getFormattedDateAttribute()
