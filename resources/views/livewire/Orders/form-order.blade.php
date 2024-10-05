@@ -18,6 +18,8 @@ new class extends Component {
     public $statusPedido = 'Pedido';
     public $statusRequerido = '';
     public $isEditing = false;
+    public $statusForm = '';
+    public $excelFile = '';
     public $agencies;
 
 
@@ -34,7 +36,14 @@ new class extends Component {
             $this->form['destination_agency_id'] = $application->destination_agency_id;
             $this->form['status'] = $application->status;
             $this->statusRequerido = $application->status;
-            $this->isEditing = true;
+            $this->excelFile = $application->excel_file;
+            $this->statusForm = $application->status;
+            if ($this->statusForm == 'Enviado'){
+                $this->isEditing = true;
+            }
+            if ($this->statusForm == 'Requerido'){
+                $this->isEditing = false;
+            }
         }
         $this->agencies = Agency::all();
     }
@@ -88,6 +97,12 @@ new class extends Component {
             return redirect()->route('orders.index');
         }
     }
+
+    public function downloadFile($filePath)
+    {
+        return Storage::download($filePath);
+    }
+
 }; ?>
 
 <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
@@ -162,10 +177,21 @@ new class extends Component {
                                     <label for="order" class="block text-sm font-medium text-gray-700">Pedido:</label>
                                     <input type="text" id="order" wire:model="form.order"
                                         class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('form.name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
-                                    "/>
+                                    " {{ $isEditing ? 'disabled' : '' }}/>
                                     @error('form.order')
                                         <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                                     @enderror
+                                </div>
+                            </div>
+                        @endif
+                        @if($form['status'] == 'Enviado')
+                            <div class="grid grid-cols-12 gap-12">
+                                <div class="col-span-6 sm:col-span-6">
+                                    <a 
+                                        wire:click="downloadFile('{{ $excelFile }}')" 
+                                        class="bg-black border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        Descargar Excel
+                                    </a>
                                 </div>
                             </div>
                         @endif
@@ -175,10 +201,12 @@ new class extends Component {
                             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Regresar
                         </a>
-                        <button type="submit"
-                            class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            {{ $applicationId ? 'Actualizar' : 'Guardar' }}
-                        </button>
+                        @if($form['status'] != 'Enviado')
+                            <button type="submit"
+                                class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                {{ $applicationId ? 'Actualizar' : 'Guardar' }}
+                            </button>
+                        @endif
                     </div>
                 </div>
             </form>
