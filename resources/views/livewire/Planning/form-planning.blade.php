@@ -14,7 +14,6 @@ new class extends Component {
 
     public $file;
     public $applicationId;
-    public $status = 'Requerido';
     public $isEditing = false;
     public $statusForm = '';
     public $excelFile = '';
@@ -53,9 +52,7 @@ new class extends Component {
             if ($this->statusForm == 'Finalizado'){
                 $this->isEditing = true;
             }
-            if ($this->statusForm == 'Solicitado'){
-                $this->isEditing = false;
-            }
+            
         }
         $this->agencies = Agency::all();
     }
@@ -70,18 +67,38 @@ new class extends Component {
             ]);
 
             $user = auth()->user();
-
-            if ($this->applicationId) {
+            if ($this->applicationId){
                 $application = Application::findOrFail($this->applicationId->id);
                 $application->update([
                     'pallet_requirement' => $this->form['pallet_requirement'],
-                    'status' => $this->status,
+                    'status' => 'Requerido',
                     'modified_user_id' => $user->id
                 ]);
                 session()->flash('message', 'Pedido actualizado exitosamente.');
                 return redirect()->route('planning.index');
             }
         }
+
+        if($this->statusForm == 'Requerido'){
+            $this->validate([
+                'form.pallet_requirement' => 'required|integer|min:1',
+            ], [
+                'form.pallet_requirement.required' => 'Ingrese requerimiento de pallet',
+            ]);
+
+            $user = auth()->user();
+
+            if ($this->applicationId){
+                $application = Application::findOrFail($this->applicationId->id);
+                $application->update([
+                    'pallet_requirement' => $this->form['pallet_requirement'],
+                    'modified_user_id' => $user->id
+                ]);
+                session()->flash('message', 'Pedido actualizado exitosamente.');
+                return redirect()->route('planning.index');
+            }
+        }
+
         if($this->statusForm == 'Confirmado'){
             $user = auth()->user();
 
@@ -95,6 +112,7 @@ new class extends Component {
                 return redirect()->route('planning.index');
             }
         }
+
         if($this->statusForm == 'Pedido'){
             $user = auth()->user();
             if ($this->file) {
@@ -129,7 +147,7 @@ new class extends Component {
                                 <label for="date" class="block text-sm font-medium text-gray-700">Fecha:</label>
                                 <input type="date" id="date" wire:model="form.date"
                                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('form.name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
-                                " {{ $isEditing ? 'disabled' : '' }} />
+                                " disabled />
                                 @error('form.date')
                                     <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                                 @enderror
@@ -138,7 +156,7 @@ new class extends Component {
                                 <label for="pallet_quantity" class="block text-sm font-medium text-gray-700">Cantidad de pallet:</label>
                                 <input type="number" id="pallet_quantity" wire:model="form.pallet_quantity"
                                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('form.name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
-                                " {{ $isEditing ? 'disabled' : '' }}/>
+                                " disabled />
                                 @error('form.pallet_quantity')
                                     <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                                 @enderror
@@ -147,7 +165,7 @@ new class extends Component {
                         <div class="grid grid-cols-12 gap-12">
                             <div class="col-span-6 sm:col-span-6">
                                 <label for="origin_agency_id" class="block text-sm font-medium text-gray-700">Origen:</label>
-                                <select id="origin_agency_id" wire:model="form.origin_agency_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" {{ $isEditing ? 'disabled' : '' }}>
+                                <select id="origin_agency_id" wire:model="form.origin_agency_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" disabled >
                                     <option value="">Seleccione origen</option>
                                         @foreach($agencies as $agency)
                                             <option value="{{ $agency->id }}">{{ $agency->name }}</option>
@@ -159,7 +177,7 @@ new class extends Component {
                             </div>
                             <div class="col-span-6 sm:col-span-6">
                                 <label for="destination_agency_id" class="block text-sm font-medium text-gray-700">Destino:</label>
-                                <select id="destination_agency_id" wire:model="form.destination_agency_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" {{ $isEditing ? 'disabled' : '' }}>
+                                <select id="destination_agency_id" wire:model="form.destination_agency_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" disabled >
                                     <option value="">Seleccione destino</option>
                                     @foreach($agencies as $agency)
                                         <option value="{{ $agency->id }}">{{ $agency->name }}</option>
@@ -226,10 +244,16 @@ new class extends Component {
                                 Finalizar
                             </button>
                         @endif
-                        @if($form['status'] == 'Solicitado')
+                        @if($form['status'] == 'Requerido')  
                             <button type="submit"
                                 class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                {{ $applicationId ? 'Pedir' : 'Guardar' }}
+                                Actualizar requerimiento
+                            </button>
+                        @endif
+                        @if($form['status'] == 'Solicitado')  
+                            <button type="submit"
+                                class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Pedir
                             </button>
                         @endif
                     </div>
