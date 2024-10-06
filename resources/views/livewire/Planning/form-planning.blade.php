@@ -121,7 +121,7 @@ new class extends Component {
                     <div class="bg-white py-6 px-4 space-y-6 sm:p-6">
                         <div>
                             <h3 class="text-lg leading-6 font-medium text-gray-900">
-                                {{ $applicationId ? 'Planificación - Actualizar pedido / ' : '' }} {{$statusForm}}
+                                {{ $applicationId ? 'Planificación - Actualizar pedido / Status:' : '' }} {{$statusForm}}
                             </h3>
                         </div>
                         <div class="grid grid-cols-12 gap-12">
