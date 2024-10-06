@@ -42,7 +42,13 @@ new class extends Component {
                 $this->isEditing = true;
             }
             if ($this->statusForm == 'Requerido'){
-                $this->isEditing = false;
+                $this->isEditing = true;
+            }
+            if ($this->statusForm == 'Pedido'){
+                $this->isEditing = true;
+            }
+            if ($this->statusForm == 'Confirmado'){
+                $this->isEditing = true;
             }
         }
         $this->agencies = Agency::all();
@@ -63,6 +69,7 @@ new class extends Component {
                 'form.destination_agency_id' => 'Seleccione destino',
             ]);
         }
+
         if($this->statusForm == 'Requerido'){
             $this->validate([
                 'form.order' => 'required',
@@ -83,14 +90,26 @@ new class extends Component {
                 session()->flash('message', 'Solicitud actualizado exitosamente.');
                 return redirect()->route('orders.index');
             }else{
-                $application = Application::findOrFail($this->applicationId->id);
-                $application->update([
-                    'order' => $this->form['order'],
-                    'status' => 'Pedido',
-                    'modified_user_id' => $user->id
-                ]);
-                session()->flash('message', 'Solicitud actualizado exitosamente.');
-                return redirect()->route('orders.index');
+                if($this->statusForm == 'Solicitado'){
+                    $application = Application::findOrFail($this->applicationId->id);
+                    $application->update([
+                        'pallet_quantity' => $this->form['pallet_quantity'],
+                        'origin_agency_id' => $this->form['origin_agency_id'],
+                        'destination_agency_id' => $this->form['destination_agency_id'],
+                        'modified_user_id' => $user->id
+                    ]);
+                    session()->flash('message', 'Solicitud modificado exitosamente.');
+                    return redirect()->route('orders.index');
+                }else{
+                    $application = Application::findOrFail($this->applicationId->id);
+                    $application->update([
+                        'order' => $this->form['order'],
+                        'status' => 'Pedido',
+                        'modified_user_id' => $user->id
+                    ]);
+                    session()->flash('message', 'Solicitud actualizado exitosamente.');
+                    return redirect()->route('orders.index');
+                }
             }
         } else {
             $existingRecord = Application::where('pallet_quantity', $this->form['pallet_quantity'])
@@ -196,23 +215,36 @@ new class extends Component {
                                     <label for="pallet_requirement" class="block text-sm font-medium text-gray-700">Requerimiento de pallet:</label>
                                     <input type="number" id="pallet_requirement" wire:model="form.pallet_requirement"
                                         class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('form.name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
-                                    " {{ $isEditing ? 'disabled' : '' }}/>
+                                    " disabled />
                                     @error('form.pallet_requirement')
                                         <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                                     @enderror
                                 </div>
-                                <div class="col-span-6 sm:col-span-6">
-                                    <label for="order" class="block text-sm font-medium text-gray-700">Pedido:</label>
-                                    <input type="text" id="order" wire:model="form.order"
-                                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('form.name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
-                                    " {{ $isEditing ? 'disabled' : '' }}/>
-                                    @error('form.order')
-                                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                                    @enderror
-                                </div>
+                                @if($form['status'] == 'Requerido' || $form['status'] == 'Pedido')
+                                    <div class="col-span-6 sm:col-span-6">
+                                        <label for="order" class="block text-sm font-medium text-gray-700">Pedido:</label>
+                                        <input type="text" id="order" wire:model="form.order"
+                                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('form.name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
+                                        " />
+                                        @error('form.order')
+                                            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                @endif
+                                @if($form['status'] == 'Enviado' || $form['status'] == 'Finalizado' || $form['status'] == 'Confirmado')
+                                    <div class="col-span-6 sm:col-span-6">
+                                        <label for="order" class="block text-sm font-medium text-gray-700">Pedido:</label>
+                                        <input type="text" id="order" wire:model="form.order"
+                                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('form.name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
+                                        " disabled />
+                                        @error('form.order')
+                                            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                @endif
                             </div>
                         @endif
-                        @if($form['status'] == 'Enviado')
+                        @if($form['status'] == 'Enviado' || $form['status'] == 'Finalizado')
                             <div class="grid grid-cols-12 gap-12">
                                 <div class="col-span-6 sm:col-span-6">
                                     <a 
@@ -235,7 +267,7 @@ new class extends Component {
                                 Confirmar
                             </button>
                         @endif
-                        @if($form['status'] != 'Enviado')
+                        @if($form['status'] == 'Solicitado' || $form['status'] == 'Pedido' || $form['status'] == 'Requerido')
                             <button type="submit"
                                 class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 {{ $applicationId ? 'Actualizar' : 'Guardar' }}
