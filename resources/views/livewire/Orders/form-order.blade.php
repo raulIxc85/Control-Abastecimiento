@@ -93,18 +93,28 @@ new class extends Component {
                 return redirect()->route('orders.index');
             }
         } else {
-            Application::create([
-                'date' => $this->form['date'],
-                'pallet_quantity' => $this->form['pallet_quantity'],
-                'origin_agency_id' => $this->form['origin_agency_id'],
-                'destination_agency_id' => $this->form['destination_agency_id'],
-                'status' => $this->status,
-                'user_id' => $user->id
-            ]);
-     
-            session()->flash('message', 'Solicitud creado exitosamente.');
+            $existingRecord = Application::where('pallet_quantity', $this->form['pallet_quantity'])
+                ->where('origin_agency_id', $this->form['origin_agency_id'])
+                ->where('destination_agency_id', $this->form['destination_agency_id'])
+                ->where('date', $this->form['date'])
+                ->first();
 
-            return redirect()->route('orders.index');
+            if ($existingRecord) {
+                session()->flash('message', 'Ya existe una solicitud con la misma fecha, cantidad, origen y destino.');
+            }else{
+                Application::create([
+                    'date' => $this->form['date'],
+                    'pallet_quantity' => $this->form['pallet_quantity'],
+                    'origin_agency_id' => $this->form['origin_agency_id'],
+                    'destination_agency_id' => $this->form['destination_agency_id'],
+                    'status' => $this->status,
+                    'user_id' => $user->id
+                ]);
+         
+                session()->flash('message', 'Solicitud creado exitosamente.');
+    
+                return redirect()->route('orders.index');
+            }
         }
     }
 
@@ -120,6 +130,13 @@ new class extends Component {
         <div class="space-y-6 sm:px-6 lg:px-0 lg:col-span-12">
             <form wire:submit.prevent="save">
                 <div class="shadow sm:rounded-md sm:overflow-hidden">
+                    <!-- Mostrar mensaje -->
+                    @if (session()->has('message'))
+                        <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                            <strong class="font-bold">Error!</strong>
+                            <span class="block sm:inline">{{ session('message') }}</span>
+                        </div>
+                    @endif
                     <div class="bg-white py-6 px-4 space-y-6 sm:p-6">
                         <div>
                             <h3 class="text-lg leading-6 font-medium text-gray-900">
