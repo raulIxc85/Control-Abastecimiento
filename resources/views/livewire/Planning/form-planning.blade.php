@@ -15,9 +15,9 @@ new class extends Component {
     public $file;
     public $applicationId;
     public $status = 'Requerido';
-    public $statusRevision = 'Enviado';
     public $isEditing = false;
     public $statusForm = '';
+    public $excelFile = '';
     public $agencies;
 
     protected $listeners = ['fileUploaded'];
@@ -39,14 +39,23 @@ new class extends Component {
             $this->form['origin_agency_id'] = $application->origin_agency_id;
             $this->form['destination_agency_id'] = $application->destination_agency_id;
             $this->form['status'] = $application->status;
+            $this->excelFile = $application->excel_file;
             $this->statusForm = $application->status;
             if ($this->statusForm == 'Pedido'){
+                $this->isEditing = true;
+            }
+            if ($this->statusForm == 'Confirmado'){
+                $this->isEditing = true;
+            }
+            if ($this->statusForm == 'Enviado'){
+                $this->isEditing = true;
+            }
+            if ($this->statusForm == 'Finalizado'){
                 $this->isEditing = true;
             }
             if ($this->statusForm == 'Solicitado'){
                 $this->isEditing = false;
             }
-            
         }
         $this->agencies = Agency::all();
     }
@@ -73,13 +82,26 @@ new class extends Component {
                 return redirect()->route('planning.index');
             }
         }
+        if($this->statusForm == 'Confirmado'){
+            $user = auth()->user();
+
+            if ($this->applicationId) {
+                $application = Application::findOrFail($this->applicationId->id);
+                $application->update([
+                    'status' => 'Finalizado',
+                    'modified_user_id' => $user->id
+                ]);
+                session()->flash('message', 'Pedido actualizado exitosamente.');
+                return redirect()->route('planning.index');
+            }
+        }
         if($this->statusForm == 'Pedido'){
             $user = auth()->user();
             if ($this->file) {
                 $application = Application::findOrFail($this->applicationId->id);
                 $application->update([
                     'excel_file' => $this->file,
-                    'status' => $this->statusRevision,
+                    'status' => 'Enviado',
                     'modified_user_id' => $user->id
                 ]);
                 session()->flash('message', 'El archivo ha sido subido exitosamente');
@@ -175,6 +197,17 @@ new class extends Component {
                                 </div>
                             </div>
                         @endif
+                        @if($form['status'] == 'Enviado' || $form['status'] == 'Confirmado' || $form['status'] == 'Finalizado')
+                            <div class="grid grid-cols-12 gap-12">
+                                <div class="col-span-6 sm:col-span-6">
+                                    <a 
+                                        wire:click="downloadFile('{{ $excelFile }}')" 
+                                        class="bg-black border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        Descargar Excel
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                     <div class="px-4 py-3 bg-gray-50 text-left sm:px-6">
                         <a wire:navigate href="{{ route('planning.index') }}" as="button"
@@ -186,7 +219,14 @@ new class extends Component {
                                 class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Subir excel
                             </button>
-                        @else
+                        @endif
+                        @if($form['status'] == 'Confirmado')
+                            <button type="submit"
+                                class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Finalizar
+                            </button>
+                        @endif
+                        @if($form['status'] == 'Solicitado')
                             <button type="submit"
                                 class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 {{ $applicationId ? 'Pedir' : 'Guardar' }}
