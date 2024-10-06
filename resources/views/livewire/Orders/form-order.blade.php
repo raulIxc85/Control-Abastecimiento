@@ -132,8 +132,8 @@ new class extends Component {
                 <div class="shadow sm:rounded-md sm:overflow-hidden">
                     <!-- Mostrar mensaje -->
                     @if (session()->has('message'))
-                        <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                            <strong class="font-bold">Error!</strong>
+                        <div class="mb-4 bg-red-200 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                            <strong class="font-bold">¡Error!</strong>
                             <span class="block sm:inline">{{ session('message') }}</span>
                         </div>
                     @endif
