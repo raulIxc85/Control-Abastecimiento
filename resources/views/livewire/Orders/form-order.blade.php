@@ -15,8 +15,6 @@ new class extends Component {
 
     public $applicationId;
     public $status = 'Solicitado';
-    public $statusPedido = 'Pedido';
-    public $statusRequerido = '';
     public $isEditing = false;
     public $statusForm = '';
     public $excelFile = '';
@@ -35,10 +33,12 @@ new class extends Component {
             $this->form['origin_agency_id'] = $application->origin_agency_id;
             $this->form['destination_agency_id'] = $application->destination_agency_id;
             $this->form['status'] = $application->status;
-            $this->statusRequerido = $application->status;
             $this->excelFile = $application->excel_file;
             $this->statusForm = $application->status;
             if ($this->statusForm == 'Enviado'){
+                $this->isEditing = true;
+            }
+            if ($this->statusForm == 'Finalizado'){
                 $this->isEditing = true;
             }
             if ($this->statusForm == 'Requerido'){
@@ -63,7 +63,7 @@ new class extends Component {
                 'form.destination_agency_id' => 'Seleccione destino',
             ]);
         }
-        if($this->statusRequerido == 'Requerido'){
+        if($this->statusForm == 'Requerido'){
             $this->validate([
                 'form.order' => 'required',
             ], [
@@ -74,14 +74,24 @@ new class extends Component {
         $user = auth()->user();
 
         if ($this->applicationId) {
-            $application = Application::findOrFail($this->applicationId->id);
-            $application->update([
-                'order' => $this->form['order'],
-                'status' => $this->statusPedido,
-                'modified_user_id' => $user->id
-            ]);
-            session()->flash('message', 'Solicitud actualizado exitosamente.');
-            return redirect()->route('orders.index');
+            if($this->statusForm == 'Enviado'){
+                $application = Application::findOrFail($this->applicationId->id);
+                $application->update([
+                    'status' => 'Confirmado',
+                    'modified_user_id' => $user->id
+                ]);
+                session()->flash('message', 'Solicitud actualizado exitosamente.');
+                return redirect()->route('orders.index');
+            }else{
+                $application = Application::findOrFail($this->applicationId->id);
+                $application->update([
+                    'order' => $this->form['order'],
+                    'status' => 'Pedido',
+                    'modified_user_id' => $user->id
+                ]);
+                session()->flash('message', 'Solicitud actualizado exitosamente.');
+                return redirect()->route('orders.index');
+            }
         } else {
             Application::create([
                 'date' => $this->form['date'],
@@ -113,7 +123,8 @@ new class extends Component {
                     <div class="bg-white py-6 px-4 space-y-6 sm:p-6">
                         <div>
                             <h3 class="text-lg leading-6 font-medium text-gray-900">
-                                {{ $applicationId ? 'Control de pedido - Actualizar pedido' : 'Crear solicitud' }}
+                                {{ $applicationId ? 'Control de pedido - Actualizar pedido / Status:' : 'Crear solicitud' }} {{$statusForm}}
+                                </h3>
                             </h3>
                         </div>
                         <div class="grid grid-cols-12 gap-12">
@@ -201,6 +212,12 @@ new class extends Component {
                             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Regresar
                         </a>
+                        @if($form['status'] == 'Enviado')
+                            <button type="submit"
+                                class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Confirmar
+                            </button>
+                        @endif
                         @if($form['status'] != 'Enviado')
                             <button type="submit"
                                 class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
