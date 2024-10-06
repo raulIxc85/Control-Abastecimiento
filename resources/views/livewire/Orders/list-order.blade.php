@@ -22,7 +22,7 @@ new class extends Component {
         <div class="px-4 sm:px-6 lg:px-8">
             <!-- Mostrar mensaje de éxito -->
             @if (session()->has('message'))
-                <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                <div class="mb-4 bg-green-200 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
                     <strong class="font-bold">Éxito!</strong>
                     <span class="block sm:inline">{{ session('message') }}</span>
                 </div>
