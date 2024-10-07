@@ -156,27 +156,27 @@ new class extends Component {
                             <span class="block sm:inline">{{ session('message') }}</span>
                         </div>
                     @endif
-                    <div class="bg-white py-6 px-4 space-y-6 sm:p-6">
+                    <div class="bg-white dark:bg-gray-800 py-6 px-4 space-y-6 sm:p-6">
                         <div>
-                            <h3 class="text-lg leading-6 font-medium text-gray-900">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                                 {{ $applicationId ? 'Control de pedido - Actualizar pedido / Status:' : 'Crear solicitud' }} {{$statusForm}}
                                 </h3>
                             </h3>
                         </div>
                         <div class="grid grid-cols-12 gap-12">
                             <div class="col-span-6 sm:col-span-6">
-                                <label for="date" class="block text-sm font-medium text-gray-700">Fecha:</label>
+                                <label for="date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Fecha:</label>
                                 <input type="date" id="date" wire:model="form.date"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('form.name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 @error('form.date') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
                                 " {{ $isEditing ? 'disabled' : '' }} />
                                 @error('form.date')
                                     <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                                 @enderror
                             </div>
                             <div class="col-span-6 sm:col-span-6">
-                                <label for="pallet_quantity" class="block text-sm font-medium text-gray-700">Cantidad de pallet:</label>
+                                <label for="pallet_quantity" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Cantidad de pallet:</label>
                                 <input type="number" id="pallet_quantity" wire:model="form.pallet_quantity"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('form.name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 @error('form.pallet_quantity') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
                                 " {{ $isEditing ? 'disabled' : '' }}/>
                                 @error('form.pallet_quantity')
                                     <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -185,8 +185,8 @@ new class extends Component {
                         </div>
                         <div class="grid grid-cols-12 gap-12">
                             <div class="col-span-6 sm:col-span-6">
-                                <label for="origin_agency_id" class="block text-sm font-medium text-gray-700">Origen:</label>
-                                <select id="origin_agency_id" wire:model="form.origin_agency_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" {{ $isEditing ? 'disabled' : '' }}>
+                                <label for="origin_agency_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Origen:</label>
+                                <select id="origin_agency_id" wire:model="form.origin_agency_id" class="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded w-full py-2 px-3 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-400 dark:focus:border-indigo-400"  {{ $isEditing ? 'disabled' : '' }}>
                                     <option value="">Seleccione origen</option>
                                         @foreach($agencies as $agency)
                                             <option value="{{ $agency->id }}">{{ $agency->name }}</option>
@@ -197,8 +197,8 @@ new class extends Component {
                                 @enderror
                             </div>
                             <div class="col-span-6 sm:col-span-6">
-                                <label for="destination_agency_id" class="block text-sm font-medium text-gray-700">Destino:</label>
-                                <select id="destination_agency_id" wire:model="form.destination_agency_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" {{ $isEditing ? 'disabled' : '' }}>
+                                <label for="destination_agency_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Destino:</label>
+                                <select id="destination_agency_id" wire:model="form.destination_agency_id" class="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded w-full py-2 px-3 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-400 dark:focus:border-indigo-400" {{ $isEditing ? 'disabled' : '' }}>
                                     <option value="">Seleccione destino</option>
                                     @foreach($agencies as $agency)
                                         <option value="{{ $agency->id }}">{{ $agency->name }}</option>
@@ -212,9 +212,9 @@ new class extends Component {
                         @if($form['status'] !== 'Solicitado')
                             <div class="grid grid-cols-12 gap-12">
                                 <div class="col-span-6 sm:col-span-6">
-                                    <label for="pallet_requirement" class="block text-sm font-medium text-gray-700">Requerimiento de pallet:</label>
+                                    <label for="pallet_requirement" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Requerimiento de pallet:</label>
                                     <input type="number" id="pallet_requirement" wire:model="form.pallet_requirement"
-                                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('form.name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
+                                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 @error('form.pallet_requirement') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
                                     " disabled />
                                     @error('form.pallet_requirement')
                                         <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -222,9 +222,9 @@ new class extends Component {
                                 </div>
                                 @if($form['status'] == 'Requerido' || $form['status'] == 'Pedido')
                                     <div class="col-span-6 sm:col-span-6">
-                                        <label for="order" class="block text-sm font-medium text-gray-700">Pedido:</label>
+                                        <label for="order" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Pedido:</label>
                                         <input type="text" id="order" wire:model="form.order"
-                                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('form.name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
+                                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 @error('form.order') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
                                         " />
                                         @error('form.order')
                                             <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -233,9 +233,9 @@ new class extends Component {
                                 @endif
                                 @if($form['status'] == 'Enviado' || $form['status'] == 'Finalizado' || $form['status'] == 'Confirmado')
                                     <div class="col-span-6 sm:col-span-6">
-                                        <label for="order" class="block text-sm font-medium text-gray-700">Pedido:</label>
+                                        <label for="order" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Pedido:</label>
                                         <input type="text" id="order" wire:model="form.order"
-                                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('form.name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
+                                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 @error('form.order') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror
                                         " disabled />
                                         @error('form.order')
                                             <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -256,9 +256,9 @@ new class extends Component {
                             </div>
                         @endif
                     </div>
-                    <div class="px-4 py-3 bg-gray-50 text-left sm:px-6">
+                    <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 text-left sm:px-6">
                         <a wire:navigate href="{{ route('orders.index') }}" as="button"
-                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:text-white dark:bg-gray-600 dark:hover:bg-gray-700">
                             Regresar
                         </a>
                         @if($form['status'] == 'Enviado')
