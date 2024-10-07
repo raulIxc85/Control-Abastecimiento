@@ -74,7 +74,7 @@ new class extends Component {
                                                     <x-heroicon-s-pencil class="size-6" />
                                                 </button>
                                                 <button onclick="confirmDelete('{{ $pilot->id }}')"
-                                                    class="ml-2 text-indigo-600 hover:text-indigo-900 dark:text-red-400 dark:hover:text-red-300">
+                                                class="ml-2 text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
                                                     <x-heroicon-s-trash class="size-6" />
                                                 </button>
                                             </td>
